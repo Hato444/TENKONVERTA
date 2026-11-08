@@ -265,7 +265,7 @@ class DownloadQueue {
         const fs = require('fs');
 
         // Get download path from the store passed during callback setup
-        const downloadPath = this._downloadPath || require('path').join(require('electron').app.getPath('downloads'), 'ArcDLP');
+        const downloadPath = this._downloadPath || require('path').join(require('electron').app.getPath('downloads'), 'TENKONVERTA');
         if (!fs.existsSync(downloadPath)) {
             fs.mkdirSync(downloadPath, { recursive: true });
         }

@@ -41,7 +41,7 @@ function getInstalledPath() {
 }
 
 async function fetchBuffer(url) {
-    const res = await net.fetch(url, { headers: { 'User-Agent': 'ArcDLP' } });
+        const res = await net.fetch(url, { headers: { 'User-Agent': 'TENKONVERTA' } });
     if (!res.ok) throw new Error(`HTTP ${res.status} from ${new URL(url).hostname}`);
     return Buffer.from(await res.arrayBuffer());
 }

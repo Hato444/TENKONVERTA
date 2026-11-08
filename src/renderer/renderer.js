@@ -1130,6 +1130,41 @@ function renderQueue() {
     attachQueueListeners();
 }
 
+function cleanSize(raw) {
+    if (!raw) return '';
+    const value = String(raw).trim();
+    if (!value || /^(n\/?a|unknown)$/i.test(value)) return '';
+    return value
+        .replace(/KiB$/i, 'KB')
+        .replace(/MiB$/i, 'MB')
+        .replace(/GiB$/i, 'GB')
+        .replace(/TiB$/i, 'TB');
+}
+
+function cleanSpeed(raw) {
+    if (!raw) return '';
+    const value = String(raw).trim();
+    if (!value || /^(n\/?a|unknown)$/i.test(value)) return '';
+    return value.replace(/KiB\/s/i, 'KB/s').replace(/MiB\/s/i, 'MB/s').replace(/GiB\/s/i, 'GB/s');
+}
+
+function formatEta(raw) {
+    if (!raw) return '';
+    const value = String(raw).trim();
+    if (!value || /^(n\/?a|unknown)$/i.test(value)) return '';
+    const parts = value.split(':').map((n) => parseInt(n, 10));
+    if (parts.some((n) => Number.isNaN(n))) return value;
+    let secs = 0;
+    for (const part of parts) secs = secs * 60 + part;
+    if (secs <= 0) return '';
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    const s = secs % 60;
+    if (h > 0) return `${h}h ${m}m left`;
+    if (m > 0) return `${m}m ${s}s left`;
+    return `${s}s left`;
+}
+
 function queueItemHTML(item) {
     const stateClass = `q-state-${item.state}`;
     const title = escapeHtml(item.title || 'Untitled');
@@ -1143,17 +1178,35 @@ function queueItemHTML(item) {
         actionsHTML = `<button class="q-item-remove" data-id="${item.id}" title="Remove">×</button>`;
     } else if (item.state === 'downloading') {
         const pct = item.progress?.percent || '0%';
-        const speed = item.progress?.speed || '';
-        const eta = item.progress?.eta || '';
+        const pctNum = Math.min(100, Math.max(0, parseFloat(pct) || 0));
         const stage = item.progress?.stage || '';
-        const pctNum = stage ? 100 : parseFloat(pct) || 0;
-        const detail = [speed, eta ? 'ETA ' + eta : ''].filter(Boolean).join(' · ');
+        const speed = cleanSpeed(item.progress?.speed);
+        const eta = formatEta(item.progress?.eta);
+        const downloaded = cleanSize(item.progress?.downloaded);
+        const total = cleanSize(item.progress?.total) || cleanSize(item.progress?.totalEstimate);
+        const size = downloaded && total ? `${downloaded} / ${total}` : downloaded || total;
 
-        // Merging and converting report no percentage, show the step instead so it doesn't look stuck
-        statusHTML = stage
-            ? `<span class="q-item-status downloading">${escapeHtml(stage)}...</span>`
-            : `<span class="q-item-status downloading">${escapeHtml(pct)}${detail ? ' · ' + escapeHtml(detail) : ''}</span>`;
-        progressHTML = `<div class="q-item-progress-track"><div class="q-item-progress-fill" style="width:${pctNum}%"></div></div>`;
+        if (stage) {
+            statusHTML = `<span class="q-item-status downloading">${escapeHtml(stage)}</span>`;
+            progressHTML = `
+                <div class="q-item-loading">
+                    <div class="q-item-progress-track"><div class="q-item-progress-fill indeterminate"></div></div>
+                </div>`;
+        } else {
+            statusHTML = '';
+            progressHTML = `
+                <div class="q-item-loading">
+                    <div class="q-loader-top">
+                        <span class="q-loader-pct">${escapeHtml(pct)}</span>
+                        <span class="q-loader-eta">${eta ? escapeHtml(eta) : pctNum >= 100 ? 'finishing...' : 'estimating...'}</span>
+                    </div>
+                    <div class="q-item-progress-track"><div class="q-item-progress-fill" style="width:${pctNum}%"></div></div>
+                    <div class="q-loader-meta">
+                        <span>${speed ? escapeHtml(speed) : '—'}</span>
+                        <span>${size ? escapeHtml(size) : ''}</span>
+                    </div>
+                </div>`;
+        }
         actionsHTML = `<button class="q-item-cancel" title="Skip this item">⏭</button>`;
     } else if (item.state === 'completed') {
         statusHTML = '<span class="q-item-status completed">Complete ✓</span>';
@@ -1735,6 +1788,8 @@ function renderAboutUpdate() {
             `<span>v${escapeHtml(updateInfo.latest)} is available</span>` +
             `<a href="#" onclick="openExternal('${escapeHtml(updateInfo.url)}'); return false;">View release</a>` +
             `</div>`;
+    } else if (updateInfo && updateInfo.disabled) {
+        el.textContent = 'Updates are managed locally';
     } else if (updateInfo && !updateInfo.hasUpdate && !updateInfo.error) {
         el.textContent = "You're on the latest version";
     } else {
@@ -1754,7 +1809,9 @@ async function doCheckForUpdates() {
         updateInfo = result;
         renderAboutUpdate();
 
-        if (result.hasUpdate) {
+        if (result.disabled) {
+            addLog('Update checks are disabled for this TENKONVERTA build', 'highlight');
+        } else if (result.hasUpdate) {
             addLog(`Update available: v${result.latest}`, 'highlight');
             showUpdateBanner();
         } else if (result.error) {

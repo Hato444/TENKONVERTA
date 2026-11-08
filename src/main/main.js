@@ -12,7 +12,7 @@ const updater = require('./updater');
 const scraper = require('./scraper');
 const { DEV_MODE, log, logError } = require('./utils');
 const fs = require('fs');
-const APP_NAME = 'ArcDLP';
+const APP_NAME = 'TENKONVERTA';
 
 process.on('uncaughtException', (err) => {
     logError('Uncaught exception:', err.message);
@@ -67,7 +67,7 @@ function createWindow() {
         height: 640,
         minWidth: 700,
         minHeight: 500,
-        backgroundColor: isMac ? '#00000000' : '#f5f5f7',
+        backgroundColor: isMac ? '#00000000' : '#050807',
         titleBarStyle: isMac ? 'hiddenInset' : 'default',
         ...(isMac ? { trafficLightPosition: { x: 16, y: 18 } } : {}),
         ...(isMac ? { vibrancy: 'under-window' } : {}),

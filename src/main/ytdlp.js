@@ -605,7 +605,7 @@ async function download({ url, formatId, outputDir, extractAudio, audioFormat, v
         '--socket-timeout',
         '30',
         '--progress-template',
-        'download:DLPROG %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s',
+        'download:DLPROG %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress._downloaded_bytes_str)s %(progress._total_bytes_str)s %(progress._total_bytes_estimate_str)s',
         '-o',
         path.join(outputDir, '%(title)s [%(id)s].%(ext)s'),
     ];
@@ -689,8 +689,11 @@ async function download({ url, formatId, outputDir, extractAudio, audioFormat, v
                 const percent = (parts[0] || '0%').trim();
                 const speed = (parts[1] || '').trim();
                 const eta = (parts[2] || '').trim();
-                log('Progress:', percent, speed, eta);
-                onProgress({ percent, speed, eta });
+                const downloaded = (parts[3] || '').trim();
+                const total = (parts[4] || '').trim();
+                const totalEstimate = (parts[5] || '').trim();
+                log('Progress:', percent, speed, eta, downloaded, total, totalEstimate);
+                onProgress({ percent, speed, eta, downloaded, total, totalEstimate });
                 return;
             }
 

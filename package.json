@@ -1,9 +1,9 @@
 {
-    "name": "arcdlp",
-    "version": "1.5.1",
-    "description": "Video downloader powered by yt-dlp",
+    "name": "tenkonverta",
+    "version": "1.0.0",
+    "description": "TENKONVERTA - local video and audio downloader powered by yt-dlp",
     "main": "src/main/main.js",
-    "author": "Archis",
+    "author": "TENKONVERTA",
     "license": "MIT",
     "private": true,
     "scripts": {
@@ -18,9 +18,9 @@
     },
     "build": {
         "publish": null,
-        "appId": "com.arcdlp.app",
-        "productName": "ArcDLP",
-        "copyright": "Copyright © 2026 Archis",
+        "appId": "com.tenkonverta.app",
+        "productName": "TENKONVERTA",
+        "copyright": "Copyright © 2026 TENKONVERTA",
         "directories": {
             "output": "dist"
         },

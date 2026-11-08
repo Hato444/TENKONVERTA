@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: http: data:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'" />
-    <title>ArcDLP</title>
+    <title>TENKONVERTA</title>
     <link rel="stylesheet" href="./index.css" />
 </head>
 
@@ -16,7 +16,9 @@
         <div id="updateBanner" class="update-banner"></div>
         <div id="toastContainer" class="toast-container"></div>
 
-        <div class="titlebar"></div>
+        <div class="titlebar">
+            <div class="brand">TENKONVERTA<span class="brand-cursor">_</span></div>
+        </div>
 
         <div class="main-area">
             <!-- Tab Bar -->
@@ -433,8 +435,8 @@
             <!-- About Tab -->
             <div id="tab-about" class="tab-panel">
                 <div class="about-hero">
-                    <img class="about-icon" src="./icon.png" alt="ArcDLP" />
-                    <div class="about-name">ArcDLP</div>
+                    <img class="about-icon" src="./icon.png" alt="TENKONVERTA" />
+                    <div class="about-name">TENKONVERTA</div>
                     <div id="aboutVersion" class="about-version">
                         -
                     </div>
@@ -445,29 +447,8 @@
                 </div>
 
                 <div class="about-description">
-                    A simple desktop app for downloading videos and audio from YouTube, Vimeo, Twitter, Instagram, and
-                    thousands of other sites. Powered by yt-dlp.
-                </div>
-
-                <div class="about-links">
-                    <a class="about-link" href="#" onclick="
-                                openExternal('https://github.com/archisvaze/arcdlp/issues');
-                                return false;
-                            ">
-                        <span class="about-link-icon">🐛</span> Report a Bug
-                    </a>
-                    <a class="about-link" href="#" onclick="
-                                openExternal('https://github.com/sponsors/archisvaze');
-                                return false;
-                            ">
-                        <span class="about-link-icon">❤️</span> Sponsor on GitHub
-                    </a>
-                    <a class="about-link" href="#" onclick="
-                                openExternal('https://buymeacoffee.com/archisvaze');
-                                return false;
-                            ">
-                        <span class="about-link-icon">☕</span> Buy Me a Coffee
-                    </a>
+                    A local video and audio downloader for YouTube, Vimeo, Twitter, Instagram, and thousands
+                    of other sites. Powered by yt-dlp. Everything stays on your machine.
                 </div>
 
                 <div class="about-section">
@@ -508,8 +489,6 @@
                     <div class="log-header-actions">
                         <button onclick="clearLog()">Clear</button>
                         <button onclick="doOpenFolder()">Open folder</button>
-                        <button class="log-support-btn"
-                            onclick="openExternal('https://github.com/sponsors/archisvaze')">♥ Support ArcDLP</button>
                     </div>
                 </div>
                 <div id="logBody" class="log-body"></div>
